@@ -1,4 +1,7 @@
-# GKE Info 
+# poc-spinnaker
+Spinnaker Proof of Concept - Nov. 2017
+
+## GKE Info
 
 | Test          |   Result      |
 | ------------- |---------------|
