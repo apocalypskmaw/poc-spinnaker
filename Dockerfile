@@ -1,12 +1,20 @@
-FROM golang:1.8 
-ENV SOURCE=/go/src/github.com/viglesiasce/gke-info \
-    GLIDE_VERSION=v0.12.3
-RUN wget -q https://github.com/Masterminds/glide/releases/download/${GLIDE_VERSION}/glide-${GLIDE_VERSION}-linux-amd64.tar.gz \
-    && tar zxfv glide-${GLIDE_VERSION}-linux-amd64.tar.gz \
-    && mv linux-amd64/glide /usr/local/bin
-COPY ./glide* $SOURCE/
-RUN cd $SOURCE && glide install
-COPY . $SOURCE
-WORKDIR $SOURCE/cmd/gke-info
-RUN go build -o gke-info
-CMD ./gke-info
+FROM python:2.7.14
+LABEL maintainer="plateformemia@lemonde.fr"
+
+RUN set -x \
+    && apt-get update \
+    && apt-get install -y \
+    ca-certificates=20141019+deb8u3 \
+       --no-install-recommends \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY entrypoint.sh /
+COPY requirements.txt /
+
+RUN pip install -r /requirements.txt
+
+EXPOSE 5557 5558 8089
+
+RUN chmod 755 /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
