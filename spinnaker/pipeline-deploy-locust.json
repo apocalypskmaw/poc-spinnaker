@@ -1,0 +1,278 @@
+{
+  "name": "Deploy Locust",
+  "application": "locust",
+  "appConfig": {},
+  "executionEngine": "v2",
+  "keepWaitingPipelines": true,
+  "lastModifiedBy": "anonymous",
+  "limitConcurrent": true,
+  "parallel": true,
+  "parameterConfig": [],
+  "stages": [
+    {
+      "clusters": [
+        {
+          "account": "local",
+          "application": "locust",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envVars": [
+                {
+                  "name": "VERSION",
+                  "value": "${trigger['tag']}"
+                }
+              ],
+              "imageDescription": {
+                "account": "gcr",
+                "fromTrigger": true,
+                "imageId": "gcr.io/poc-spinnaker/locust:v.*",
+                "registry": "gcr.io",
+                "repository": "poc-spinnaker/locust",
+                "tag": "v.*"
+              },
+              "imagePullPolicy": "ALWAYS",
+              "limits": {
+                "cpu": null,
+                "memory": null
+              },
+              "livenessProbe": null,
+              "name": "poc-spinnaker-locust",
+              "ports": [
+                {
+                  "containerPort": 8089,
+                  "hostIp": null,
+                  "hostPort": null,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "readinessProbe": null,
+              "requests": {
+                "cpu": null,
+                "memory": null
+              },
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": "100%",
+                "maxUnavailable": "0%"
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": true,
+            "minReadySeconds": 0,
+            "paused": false,
+            "progressRollbackSeconds": null,
+            "revisionHistoryLimit": 2,
+            "rollbackRevision": null
+          },
+          "events": [],
+          "freeFormDetails": "canary",
+          "hostNetwork": null,
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "locust-canary"
+          ],
+          "namespace": "default",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "default",
+          "replicaSetAnnotations": {
+            "deployment.kubernetes.io/desired-replicas": "4",
+            "deployment.kubernetes.io/max-replicas": "8",
+            "deployment.kubernetes.io/revision": "28"
+          },
+          "restartPolicy": null,
+          "securityContext": null,
+          "securityGroups": [],
+          "sequence": null,
+          "stack": null,
+          "strategy": "",
+          "targetSize": 1,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        }
+      ],
+      "name": "Locust Canary",
+      "refId": "1",
+      "requisiteStageRefIds": [],
+      "type": "deploy"
+    },
+    {
+      "account": "local",
+      "annotations": {},
+      "application": "locust",
+      "cloudProvider": "kubernetes",
+      "cloudProviderType": "kubernetes",
+      "container": {
+        "args": [],
+        "command": [
+          "curl",
+          "http://locust-canary:8089"
+        ],
+        "envVars": [],
+        "imageDescription": {
+          "account": "gcr",
+          "fromTrigger": true,
+          "organization": "poc-spinnaker",
+          "registry": "gcr.io",
+          "repository": "poc-spinnaker/locust",
+          "tag": "v.*"
+        },
+        "name": "1494826281215",
+        "volumeMounts": []
+      },
+      "credentials": "local",
+      "labels": {},
+      "name": "Locust Integration Tests",
+      "namespace": "default",
+      "refId": "2",
+      "requisiteStageRefIds": [
+        "1"
+      ],
+      "type": "runJob",
+      "volumeSources": []
+    },
+    {
+      "failPipeline": true,
+      "instructions": "Do you want to deploy this image to production?",
+      "judgmentInputs": [],
+      "name": "Push to Production?",
+      "notifications": [],
+      "refId": "3",
+      "requisiteStageRefIds": [
+        "2"
+      ],
+      "type": "manualJudgment"
+    },
+    {
+      "clusters": [
+        {
+          "account": "local",
+          "application": "locust",
+          "cloudProvider": "kubernetes",
+          "containers": [
+            {
+              "args": [],
+              "command": [],
+              "envVars": [
+                {
+                  "envSource": null
+                },
+                {
+                  "envSource": null,
+                  "name": "VERSION",
+                  "value": "${ trigger['tag'] }"
+                }
+              ],
+              "imageDescription": {
+                "account": "gcr",
+                "fromTrigger": true,
+                "imageId": "gcr.io/poc-spinnaker/locust:v.*",
+                "registry": "gcr.io",
+                "repository": "poc-spinnaker/locust",
+                "tag": "v.*"
+              },
+              "imagePullPolicy": "ALWAYS",
+              "lifecycle": null,
+              "limits": null,
+              "livenessProbe": null,
+              "name": "poc-spinnaker-locust",
+              "ports": [
+                {
+                  "containerPort": 80,
+                  "hostIp": null,
+                  "hostPort": null,
+                  "name": "http",
+                  "protocol": "TCP"
+                }
+              ],
+              "readinessProbe": null,
+              "requests": null,
+              "securityContext": null,
+              "volumeMounts": []
+            }
+          ],
+          "deployment": {
+            "deploymentStrategy": {
+              "rollingUpdate": {
+                "maxSurge": "100%",
+                "maxUnavailable": "0%"
+              },
+              "type": "RollingUpdate"
+            },
+            "enabled": true,
+            "minReadySeconds": 0,
+            "paused": false,
+            "progressRollbackSeconds": null,
+            "revisionHistoryLimit": 2,
+            "rollbackRevision": null
+          },
+          "events": [],
+          "freeFormDetails": "prod",
+          "hostNetwork": null,
+          "interestingHealthProviderNames": [
+            "KubernetesContainer",
+            "KubernetesPod"
+          ],
+          "loadBalancers": [
+            "locust-prod"
+          ],
+          "namespace": "default",
+          "nodeSelector": {},
+          "podAnnotations": {},
+          "provider": "kubernetes",
+          "region": "default",
+          "replicaSetAnnotations": {
+            "deployment.kubernetes.io/desired-replicas": "8",
+            "deployment.kubernetes.io/max-replicas": "16",
+            "deployment.kubernetes.io/revision": "43",
+            "deployment.kubernetes.io/revision-history": "12"
+          },
+          "restartPolicy": null,
+          "securityContext": null,
+          "securityGroups": [],
+          "sequence": null,
+          "stack": null,
+          "strategy": "",
+          "targetSize": 8,
+          "terminationGracePeriodSeconds": 30,
+          "volumeSources": []
+        }
+      ],
+      "name": "Deploy Prod",
+      "refId": "4",
+      "requisiteStageRefIds": [
+        "3"
+      ],
+      "type": "deploy"
+    }
+  ],
+  "triggers": [
+    {
+      "account": "gcr",
+      "application": "gceme",
+      "enabled": true,
+      "organization": "poc-spinnaker",
+      "pipeline": "61372c70-62af-422f-9565-e1975a758612",
+      "registry": "gcr.io",
+      "repository": "poc-spinnaker/locust",
+      "status": [
+        "successful"
+      ],
+      "tag": "v.*",
+      "type": "docker"
+    }
+  ],
+  "updateTs": "1500322920670"
+}
