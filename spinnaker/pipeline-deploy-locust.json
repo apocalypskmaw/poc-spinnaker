@@ -19,12 +19,7 @@
             {
               "args": [],
               "command": [],
-              "envVars": [
-                {
-                  "name": "VERSION",
-                  "value": "${trigger['tag']}"
-                }
-              ],
+              "envVars": [],
               "imageDescription": {
                 "account": "gcr",
                 "fromTrigger": true,
@@ -96,7 +91,7 @@
           "securityContext": null,
           "securityGroups": [],
           "sequence": null,
-          "stack": null,
+          "stack": "web",
           "strategy": "",
           "targetSize": 1,
           "terminationGracePeriodSeconds": 30,
@@ -165,16 +160,7 @@
             {
               "args": [],
               "command": [],
-              "envVars": [
-                {
-                  "envSource": null
-                },
-                {
-                  "envSource": null,
-                  "name": "VERSION",
-                  "value": "${ trigger['tag'] }"
-                }
-              ],
+              "envVars": [],
               "imageDescription": {
                 "account": "gcr",
                 "fromTrigger": true,
@@ -243,7 +229,7 @@
           "securityContext": null,
           "securityGroups": [],
           "sequence": null,
-          "stack": null,
+          "stack": "web",
           "strategy": "",
           "targetSize": 8,
           "terminationGracePeriodSeconds": 30,
