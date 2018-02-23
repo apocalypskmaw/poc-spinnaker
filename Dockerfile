@@ -10,6 +10,7 @@ RUN set -x \
 
 COPY entrypoint.sh /
 COPY requirements.txt /
+COPY locust-tasks /locust/py-locustfiles
 
 RUN pip install -r /requirements.txt
 
